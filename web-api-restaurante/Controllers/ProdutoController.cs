@@ -33,5 +33,34 @@ namespace web_api_restaurante.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            using IDbConnection dbConnection = OpenConnection();
+            string sql = "select id, nome, descricao, imageUrl from Produto WHERE id = @id;";
+
+            var produto = await dbConnection.QueryFirstOrDefaultAsync<Produto>(sql, new { id });
+
+            dbConnection.Close();
+
+            if(produto == null)
+                return NotFound();
+
+            return Ok(produto);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody]Produto produto)
+        {
+            using IDbConnection dbConnection = OpenConnection();
+            string query = @"INSERT into produto(nome, descricao, imageUrl)  
+                VALUES(@Nome, @Descricao, @ImagemUrl); ";
+
+            await dbConnection.ExecuteAsync(query, produto);
+
+            dbConnection.Close();
+
+            return Ok();
+        }
     }
 }
