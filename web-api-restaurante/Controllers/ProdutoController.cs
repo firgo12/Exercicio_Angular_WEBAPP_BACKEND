@@ -31,7 +31,7 @@ namespace web_api_restaurante.Controllers
             string sql = "select id, nome, descricao, imageUrl from Produto;";
             var result = await dbConnection.QueryAsync<Produto>(sql);
 
-            return Ok();
+            return Ok(result);
         }
     }
 }
